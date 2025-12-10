@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Money Tracker</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* ---------- HOME PAGE (stylized HQ look) ---------- */
+    #home {
+      display: block; /* start here */
+      background: linear-gradient(180deg, #020b18 0%, #061829 40%, #02050a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* “Skyline” background made of CSS buildings */
+    .sky-glow {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(90,150,255,0.45) 0%, transparent 60%);
+      opacity: 0.7;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140%;
+      height: 55%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 6px;
+      opacity: 0.7;
+    }
+
+    .building {
+      background: linear-gradient(180deg, #1c2b3d, #0d1623);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .building.main {
+      width: 90px;
+      height: 260px;
+    }
+
+    .building.side {
+      width: 50px;
+      height: 180px;
+    }
+
+    .building.small {
+      width: 35px;
+      height: 140px;
+    }
+
+    .window-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 10px 8px;
+    }
+
+    .window {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: rgba(180, 220, 255, 0.18);
+    }
+
+    .window.on {
+      background: rgba(203, 235, 255, 0.85);
+    }
+
+    /* Overlay + content centered */
+    .home-overlay {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(
+        180deg,
+        rgba(0,0,0,0.15) 0%,
+        rgba(0,0,0,0.65) 40%,
+        rgba(0,0,0,0.9) 100%
+      );
+    }
+
+    .box {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* ---------- TEXT & BUTTON SIZES (scaled nicely) ---------- */
+    h1 {
+      margin-bottom: 10px;
+      font-size: 8vw;       /* scales with screen width */
+      max-font-size: 36px;  /* visual cap (browsers ignore but OK) */
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 4.2vw;
+      max-font-size: 16px;
+      color: #d0d7e5;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin: 14px 0;
+      font-size: 4.5vw;
+      max-font-size: 18px;
+      border-radius: 30px;
+      border: none;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    /* ---------- OTHER PAGES (centered) ---------- */
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      background: radial-gradient(circle at top, #1c2a3e 0%, #04070d 55%, #000 100%);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    input {
+      width: 120px;
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .total {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #c5cede;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ HOME PAGE -->
+<div id="home" class="page">
+  <div class="sky-glow"></div>
+  <div class="skyline">
+    <div class="building small">
+      <div class="window-row">
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window on"></div><div class="window"></div><div class="window on"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+      </div>
+    </div>
+    <div class="building side">
+      <div class="window-row">
+        <div class="window on"></div><div class="window"></div><div class="window on"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window on"></div><div class="window"></div><div class="window on"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+      </div>
+    </div>
+    <div class="building main">
+      <div class="window-row">
+        <div class="window on"></div><div class="window"></div><div class="window"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window"></div><div class="window"></div><div class="window on"></div>
+        <div class="window on"></div><div class="window"></div><div class="window"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window"></div><div class="window"></div><div class="window on"></div>
+      </div>
+    </div>
+    <div class="building side">
+      <div class="window-row">
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+        <div class="window on"></div><div class="window"></div><div class="window on"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+      </div>
+    </div>
+    <div class="building small">
+      <div class="window-row">
+        <div class="window"></div><div class="window"></div><div class="window on"></div>
+        <div class="window on"></div><div class="window"></div><div class="window"></div>
+        <div class="window"></div><div class="window on"></div><div class="window"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-overlay">
+    <div class="box">
+      <h1>Hey, User</h1>
+      <h2>Track your money like a bank HQ</h2>
+
+      <button onclick="openPage('credit')">Input (Credit)</button>
+      <button onclick="openPage('debit')">Output (Debit)</button>
+      <button onclick="openPage('summary')">Summary</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ CREDIT PAGE -->
+<div id="credit" class="page center">
+  <div class="box">
+    <h1>Credit</h1>
+    <h2>Money coming in</h2>
+
+    <ul>
+      <li>Salary <input type="number" oninput="calculate()"></li>
+      <li>Pocket Money <input type="number" oninput="calculate()"></li>
+      <li>Stock Profits <input type="number" oninput="calculate()"></li>
+      <li>Other <input id="creditVoice" type="number" oninput="calculate()"></li>
+    </ul>
+
+    <button onclick="focusVoice('creditVoice')">🎙 Add credit by voice</button>
+    <div class="note">Tap the mic on your keyboard and speak the amount.</div>
+
+    <div class="total">Total Credit: ₹ <span id="totalCredit">0</span></div>
+
+    <button onclick="openPage('home')">Back</button>
+  </div>
+</div>
+
+<!-- ✅ DEBIT PAGE -->
+<div id="debit" class="page center">
+  <div class="box">
+    <h1>Debit</h1>
+    <h2>Money going out</h2>
+
+    <ul>
+      <li>Food (Shawarma) <input type="number" oninput="calculate()"></li>
+      <li>Shopping <input type="number" oninput="calculate()"></li>
+      <li>Travel <input type="number" oninput="calculate()"></li>
+      <li>Other <input id="debitVoice" type="number" oninput="calculate()"></li>
+    </ul>
+
+    <button onclick="focusVoice('debitVoice')">🎙 Add debit by voice</button>
+    <div class="note">Tap the mic on your keyboard and speak the amount.</div>
+
+    <div class="total">Total Debit: ₹ <span id="totalDebit">0</span></div>
+
+    <button onclick="openPage('home')">Back</button>
+  </div>
+</div>
+
+<!-- ✅ SUMMARY PAGE -->
+<div id="summary" class="page center">
+  <div class="box">
+    <h1>Summary</h1>
+
+    <p>Total Credit: ₹ <span id="sumCredit">0</span></p>
+    <p>Total Debit: ₹ <span id="sumDebit">0</span></p>
+    <p><b>Net:</b> ₹ <span id="net">0</span></p>
+    <p id="status"></p>
+
+    <button onclick="openPage('home')">Back</button>
+  </div>
+</div>
+
+<script>
+  function openPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    const page = document.getElementById(id);
+    if (page) page.style.display = 'block';
+    if (id === 'summary') calculate();
+  }
+
+  function calculate() {
+    let credit = 0;
+    document.querySelectorAll('#credit input').forEach(i => {
+      credit += Number(i.value || 0);
+    });
+
+    let debit = 0;
+    document.querySelectorAll('#debit input').forEach(i => {
+      debit += Number(i.value || 0);
+    });
+
+    document.getElementById('totalCredit').innerText = credit.toLocaleString('en-IN');
+    document.getElementById('totalDebit').innerText = debit.toLocaleString('en-IN');
+    document.getElementById('sumCredit').innerText = credit.toLocaleString('en-IN');
+    document.getElementById('sumDebit').innerText = debit.toLocaleString('en-IN');
+
+    const net = credit - debit;
+    document.getElementById('net').innerText = net.toLocaleString('en-IN');
+
+    const status = document.getElementById('status');
+    if (net > 0) {
+      status.innerText = '✅ Profit';
+      status.style.color = '#8bc34a';
+    } else if (net < 0) {
+      status.innerText = '⚠️ Loss';
+      status.style.color = '#ff5252';
+    } else {
+      status.innerText = '➖ Break-even';
+      status.style.color = '#ffffff';
+    }
+  }
+
+  function focusVoice(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.focus();
+      alert('Tap the mic icon on your keyboard and speak the amount.');
+    }
+  }
+</script>
+
+</body>
+</html>
